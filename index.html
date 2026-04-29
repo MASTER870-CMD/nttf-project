@@ -7,7 +7,6 @@
     <link rel="icon" href="https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/b0/85/4f/b0854f87-89af-d34a-7a58-5bbb4d7efb67/AppIcon-0-0-1x_U007emarketing-0-0-0-10-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png" type="image/webp">
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -39,7 +38,6 @@
             --max-content-width: 1400px;
         }
 
-        /* Override Bootstrap font */
         body, * { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 
         body {
@@ -118,10 +116,9 @@
         .search-container input { width: 100%; padding: 20px 24px 20px 60px; border: 2px solid var(--border-light); border-radius: 16px; font-size: 1.1rem; outline: none; transition: var(--transition); background: var(--bg-base); color: var(--text-main); }
         .search-container input:focus { border-color: var(--primary); box-shadow: 0 0 0 5px var(--primary-glow); background: #FFFFFF; transform: translateY(-2px); }
         
-        /* Updated Search Icon Wrapper for Lordicon */
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); transition: var(--transition); display: flex; align-items: center; pointer-events: none; z-index: 10; }
 
-        /* --- BOOTSTRAP ADAPTED VIDEO CARDS --- */
+        /* --- VIDEO CARDS --- */
         .video-card { 
             background: #FFFFFF; border-radius: 20px; border: 1px solid var(--border-light); 
             box-shadow: var(--card-shadow); transition: var(--transition); 
@@ -131,9 +128,8 @@
         }
         .video-card:hover { box-shadow: var(--hover-shadow); transform: translateY(-4px); }
         
-        /* IFRAME & SKELETON WRAPPER */
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 20px 20px 0 0; overflow: hidden; flex-shrink: 0; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 1; pointer-events: none; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 1; pointer-events: none; } 
         
         .skeleton-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -144,7 +140,6 @@
             transition: opacity 0.5s ease;
         }
 
-        /* Play Button Overlay on Hover */
         .video-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.1) 100%);
@@ -170,34 +165,15 @@
         .video-title { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; }
         .video-desc { font-size: 0.9rem; color: var(--text-muted); flex-grow: 1; margin: 0; line-height: 1.6; }
 
-        /* System Messages */
-        .loading-footer {
-            display: none; justify-content: center; align-items: center; padding: 40px 0; width: 100%;
-        }
+        .loading-footer { display: none; justify-content: center; align-items: center; padding: 40px 0; width: 100%; }
         .loading-footer.active { display: flex; }
-        
-        .end-message {
-            display: none; text-align: center; padding: 30px; color: var(--text-muted); font-weight: 600; width: 100%;
-        }
+        .end-message { display: none; text-align: center; padding: 30px; color: var(--text-muted); font-weight: 600; width: 100%; }
         .end-message.active { display: block; }
-
         .no-results { display: none; text-align: center; padding: 60px; font-size: 1.25rem; font-weight: 600; color: var(--text-muted); background: #FFFFFF; border-radius: 20px; border: 1px dashed var(--border-light); width: 100%; }
 
-        /* Attribution Footer */
-        .attribution-footer {
-            margin-top: auto;
-            text-align: center;
-            padding: 24px 0 10px 0;
-        }
-        .attribution-footer a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: var(--transition);
-        }
-        .attribution-footer a:hover {
-            color: var(--primary);
-        }
+        .attribution-footer { margin-top: auto; text-align: center; padding: 24px 0 10px 0; }
+        .attribution-footer a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: var(--transition); }
+        .attribution-footer a:hover { color: var(--primary); }
 
         /* Cinematic Modal Fixes */
         #playerModal .modal-content { background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; }
@@ -210,7 +186,6 @@
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* RESPONSIVE */
         @media (max-width: 1024px) { 
             .sidebar { position: fixed; left: -100%; top: 0; height: 100vh; box-shadow: 20px 0 50px rgba(0,0,0,0.1); } 
             .sidebar.active { left: 0; } 
@@ -318,18 +293,26 @@
         // Modal Logic
         const playerModal = new bootstrap.Modal(document.getElementById('playerModal'));
 
-        function playVideo(embedUrl, title) {
-            if (!embedUrl) return alert("Video link is broken.");
+        // =========================================================================
+        // FIX: Safe ID-based playback function
+        // =========================================================================
+        function playVideo(index) {
+            const video = myVideos[index];
+            const embedUrl = video.streamUrl || video.embedUrl;
+            const title = video.title || 'Video';
+
+            if (!embedUrl) return alert("Video link is missing.");
 
             document.getElementById('playerTitle').innerText = title;
             const container = document.getElementById('iframeContainer');
             
+            // Added full autoplay and media permissions to the iframe
             container.innerHTML = `
                 <div class="iframe-loader" id="iframeLoader">
                     <div class="spinner-border text-warning mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
                     <span class="text-muted fw-bold">Connecting to Secure Stream...</span>
                 </div>
-                <iframe src="${embedUrl}" allowfullscreen onload="document.getElementById('iframeLoader').style.display='none'"></iframe>
+                <iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" onload="document.getElementById('iframeLoader').style.display='none'"></iframe>
             `;
             playerModal.show();
         }
@@ -345,50 +328,41 @@
         let isLoading = false;
         let isSearching = false;
 
-        // --- FETCH JSON & LOCAL STORAGE LOGIC ---
+        // --- FETCH JSON LOGIC ---
         async function fetchVideoData() {
             try {
                 loadingFooter.classList.add('active');
                 
-                // 1. Check Local Storage first
-                const rawLocal = localStorage.getItem('nttf_videos');
-                
-                if (rawLocal && rawLocal !== '[]') {
-                    myVideos = JSON.parse(rawLocal);
-                } else {
-                    // 2. Fetch from JSON if local storage is empty
-                    const response = await fetch('videos.json');
-                    if (!response.ok) throw new Error('Failed to load JSON');
-                    myVideos = await response.json();
-                    localStorage.setItem('nttf_videos', JSON.stringify(myVideos));
+                const response = await fetch('videos.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load JSON');
                 }
                 
+                myVideos = await response.json();
                 loadNextBatch();
             } catch (error) {
                 console.error('Error fetching videos:', error);
                 loadingFooter.classList.remove('active');
                 noResults.style.display = 'block';
-                noResults.innerText = "Error loading video archive. Please ensure you are running a local server.";
+                noResults.innerText = "Error loading video archive. Ensure videos.json is present.";
             }
         }
 
-        // Appends a single video card with ONCLICK event
-        function appendVideoCard(video) {
+        // Appends a single video card using index for click
+        function appendVideoCard(video, index) {
             const colWrapper = document.createElement('div');
             colWrapper.className = 'col-12 col-md-6 col-lg-4 video-card-container';
             
             const safeUrl = video.streamUrl || video.embedUrl || '';
-            const safeTitle = (video.title || '').replace(/'/g, "\\'");
             
+            // FIX: onClick now passes a clean number (index) instead of a messy URL string
             colWrapper.innerHTML = `
-                <div class="video-card" onclick="playVideo('${safeUrl}', '${safeTitle}')">
+                <div class="video-card" onclick="playVideo(${index})">
                     <div class="video-wrapper">
                         <div class="skeleton-overlay"></div>
                         <iframe 
                             src="${safeUrl}" 
-                            allowfullscreen 
                             loading="lazy" 
-                            allow="autoplay; encrypted-media; picture-in-picture"
                             onload="this.previousElementSibling.style.opacity='0'; setTimeout(() => this.previousElementSibling.style.display='none', 500);">
                         </iframe>
                         <div class="video-overlay">
@@ -404,7 +378,7 @@
             `;
             
             videoGrid.insertBefore(colWrapper, loadingFooter);
-            lucide.createIcons(); // Render play icons
+            lucide.createIcons();
         }
 
         // Handles lazy loading of batches
@@ -419,7 +393,8 @@
                 const limit = Math.min(currentIndex + videosPerLoad, myVideos.length);
                 
                 for (let i = currentIndex; i < limit; i++) {
-                    appendVideoCard(myVideos[i]);
+                    // Pass index so we can fetch it cleanly on click
+                    appendVideoCard(myVideos[i], i);
                 }
                 
                 currentIndex = limit;
@@ -432,10 +407,8 @@
             }, 1000);
         }
 
-        // Initialize fetch on page load
         fetchVideoData();
 
-        // Infinite Scroll Listener
         mainScroll.addEventListener('scroll', () => {
             const { scrollTop, scrollHeight, clientHeight } = mainScroll;
             if (scrollTop + clientHeight >= scrollHeight - 50) {
@@ -443,7 +416,6 @@
             }
         });
 
-        // Search Input Listener
         searchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase().trim();
             
@@ -464,13 +436,13 @@
             
             let visibleCount = 0;
 
-            myVideos.forEach(video => {
+            myVideos.forEach((video, index) => {
                 const title = (video.title || "").toLowerCase();
                 const id = (video.id || video.recId || "").toLowerCase();
                 const desc = (video.desc || video.description || "").toLowerCase();
 
                 if (title.includes(searchTerm) || id.includes(searchTerm) || desc.includes(searchTerm)) {
-                    appendVideoCard(video);
+                    appendVideoCard(video, index);
                     visibleCount++;
                 }
             });
@@ -478,7 +450,6 @@
             noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
         });
 
-        // Sidebar Logic
         const logoBtn = document.getElementById('logo-menu-trigger');
         const sidebar = document.getElementById('sidebar');
 
