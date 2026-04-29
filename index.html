@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Digital Archives</title>
+    <link rel="icon" href="https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/b0/85/4f/b0854f87-89af-d34a-7a58-5bbb4d7efb67/AppIcon-0-0-1x_U007emarketing-0-0-0-10-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png" type="image/webp">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+    <style>
+        /* === PREMIUM DESIGN TOKENS === */
+        :root {
+            --primary: #EAB308;
+            --primary-hover: #CA8A04;
+            --primary-glow: rgba(234, 179, 8, 0.15);
+            
+            --bg-base: #F8FAFC;
+            --bg-gradient-1: #F8FAFC;
+            --bg-gradient-2: #FFFFFF;
+            
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border-light: rgba(148, 163, 184, 0.25);
+            
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            --hover-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08), 0 0 0 2px var(--primary-glow);
+            
+            --bezier: cubic-bezier(0.25, 1, 0.5, 1);
+            --transition: all 0.4s var(--bezier);
+            --sidebar-width: 280px;
+            --max-content-width: 1400px;
+        }
+
+        /* Override Bootstrap font */
+        body, * { font-family: 'Plus Jakarta Sans', sans-serif !important; }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: #FFFFFF;
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            z-index: 1000;
+            position: relative;
+        }
+        .sidebar.collapsed { margin-left: calc(var(--sidebar-width) * -1); }
+        .brand-section { padding: 32px 24px 24px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border-light); }
+        .nav-menu { padding: 24px 16px; list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 0; }
+        .nav-item { padding: 16px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--text-muted); transition: var(--transition); display: flex; align-items: center; gap: 16px; position: relative; }
+        .nav-icon { display: flex; align-items: center; justify-content: center; width: 24px; }
+        .nav-icon i { width: 20px; height: 20px; transition: var(--transition); color: var(--text-muted); }
+        
+        .nav-item:hover { background: var(--primary-glow); color: var(--text-main); transform: translateX(4px); }
+        .nav-item.active { background: #FFFFFF; color: var(--text-main); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: var(--primary); border-radius: 0 4px 4px 0; }
+        .nav-item.active .nav-icon i { color: var(--primary-hover); }
+
+        /* --- MAIN LAYOUT & CONTAINER --- */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
+        .custom-container { max-width: var(--max-content-width); margin: 0 auto; width: 100%; padding: 0 32px; display: flex; flex-direction: column; min-height: 100%;}
+
+        /* --- GLASS HEADER --- */
+        .header {
+            height: 80px; background: var(--glass-bg); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-light); display: flex; align-items: center;
+            justify-content: space-between; box-shadow: var(--glass-shadow); position: sticky;
+            top: 0; z-index: 100; padding: 0 32px;
+        }
+        
+        .header-left { display: flex; align-items: center; gap: 24px; }
+        
+        .nttf-logo { 
+            height: 44px; width: auto; object-fit: contain; cursor: pointer; 
+            transition: var(--transition); border-radius: 8px;
+        }
+        .nttf-logo:hover { transform: scale(1.05); filter: drop-shadow(0 4px 12px var(--primary-glow)); }
+        
+        .header-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin: 0; }
+        
+        .header-right { display: flex; align-items: center; gap: 24px; }
+        .profile-avatar { width: 44px; height: 44px; border-radius: 12px; overflow: hidden; border: 2px solid #FFF; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: var(--transition); }
+        .profile-avatar:hover { border-color: var(--primary); box-shadow: 0 4px 15px var(--primary-glow); }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- CONTENT AREA --- */
+        .content-area { flex: 1; overflow-y: auto; scroll-behavior: smooth; padding-top: 32px; padding-bottom: 30px; }
+        
+        .search-banner { background: #FFFFFF; border-radius: 24px; padding: 48px 40px; text-align: center; margin-bottom: 40px; box-shadow: var(--card-shadow); border: 1px solid var(--border-light); position: relative; }
+        .search-banner h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
+        .search-banner p { color: var(--text-muted); margin-bottom: 32px; font-size: 1.1rem; }
+        
+        .search-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; }
+        .search-container input { width: 100%; padding: 20px 24px 20px 60px; border: 2px solid var(--border-light); border-radius: 16px; font-size: 1.1rem; outline: none; transition: var(--transition); background: var(--bg-base); color: var(--text-main); }
+        .search-container input:focus { border-color: var(--primary); box-shadow: 0 0 0 5px var(--primary-glow); background: #FFFFFF; transform: translateY(-2px); }
+        
+        /* Updated Search Icon Wrapper for Lordicon */
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); transition: var(--transition); display: flex; align-items: center; pointer-events: none; z-index: 10; }
+
+        /* --- BOOTSTRAP ADAPTED VIDEO CARDS --- */
+        .video-card { 
+            background: #FFFFFF; border-radius: 20px; border: 1px solid var(--border-light); 
+            box-shadow: var(--card-shadow); transition: var(--transition); 
+            display: flex; flex-direction: column; position: relative; overflow: hidden; 
+            opacity: 0; animation: fadeIn 0.6s var(--bezier) forwards; 
+            height: 100%; /* Ensures cards stretch equally in Bootstrap Grid */
+        }
+        .video-card:hover { box-shadow: var(--hover-shadow); transform: translateY(-4px); }
+        
+        /* IFRAME & SKELETON WRAPPER */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 20px 20px 0 0; overflow: hidden; flex-shrink: 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 1; pointer-events: none; } /* Pointer events none ensures thumbnail behavior */
+        
+        .skeleton-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            z-index: 2;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+        .video-badge { 
+            align-self: flex-start; padding: 6px 12px; background: var(--bg-base); 
+            color: var(--text-muted); border: 1px solid var(--border-light);
+            border-radius: 8px; font-size: 0.8rem; font-weight: 700; margin-bottom: 16px; 
+            transition: var(--transition);
+        }
+        .video-card:hover .video-badge { background: var(--primary-glow); color: var(--primary-hover); border-color: transparent; }
+        
+        .video-title { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; }
+        .video-desc { font-size: 0.9rem; color: var(--text-muted); flex-grow: 1; margin: 0; line-height: 1.6; }
+
+        /* System Messages */
+        .loading-footer {
+            display: none; justify-content: center; align-items: center; padding: 40px 0; width: 100%;
+        }
+        .loading-footer.active { display: flex; }
+        
+        .end-message {
+            display: none; text-align: center; padding: 30px; color: var(--text-muted); font-weight: 600; width: 100%;
+        }
+        .end-message.active { display: block; }
+
+        .no-results { display: none; text-align: center; padding: 60px; font-size: 1.25rem; font-weight: 600; color: var(--text-muted); background: #FFFFFF; border-radius: 20px; border: 1px dashed var(--border-light); width: 100%; }
+
+        /* Attribution Footer */
+        .attribution-footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 24px 0 10px 0;
+        }
+        .attribution-footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .attribution-footer a:hover {
+            color: var(--primary);
+        }
+
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) { 
+            .sidebar { position: fixed; left: -100%; top: 0; height: 100vh; box-shadow: 20px 0 50px rgba(0,0,0,0.1); } 
+            .sidebar.active { left: 0; } 
+            .sidebar.collapsed { left: -100%; margin-left: 0; } 
+            .custom-container, .header { padding: 0 20px; } 
+        }
+        @media (max-width: 768px) { 
+            .header-title { display: none; } 
+            .search-banner { padding: 32px 20px; } 
+            .search-banner h1 { font-size: 1.8rem; } 
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar collapsed" id="sidebar">
+        <div class="brand-section">
+            <h2 style="color:var(--text-main); font-weight:800; font-size:1.4rem; margin:0;">Digital<span style="color:var(--primary)">Archive</span></h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active"><span class="nav-icon"><i data-lucide="play-square"></i></span><span>Video Library</span></li>
+            <li class="nav-item"><span class="nav-icon"><i data-lucide="cloud-upload"></i></span><span>Upload Archive</span></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="header">
+            <div class="header-left">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-P2Gj1Pg8ZVdTbVZi5iztwJqmTqyv5fccdA&s" alt="NTTF Logo" class="nttf-logo" id="logo-menu-trigger" title="Toggle Sidebar Menu">
+                <div class="header-title">Digital Archive Portal</div>
+            </div>
+            <div class="header-right">
+                <div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Shashank+Gowda+NB&background=0F172A&color=EAB308&bold=true" alt="Profile"></div>
+            </div>
+        </header>
+
+        <main class="content-area" id="mainScroll">
+            <div class="custom-container">
+                <div class="search-banner">
+                    <h1>Preserving Technical Excellence</h1>
+                    <p>Unlock our extensive library of classic training modules, securely streamed.</p>
+                    <div class="search-container">
+                        <span class="search-icon">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/wjyqkiew.json"
+                                trigger="hover"
+                                colors="primary:#475569,secondary:#eab308"
+                                style="width:28px;height:28px">
+                            </lord-icon>
+                        </span>
+                        <input type="text" id="searchInput" placeholder="Search by video title, REC ID, or description...">
+                    </div>
+                </div>
+
+                <div class="row g-4" id="videoGrid">
+                    
+                    <div class="col-12 no-results" id="noResults">No modules found matching your criteria.</div>
+                    
+                    <div class="col-12 loading-footer" id="loadingFooter">
+                        <lord-icon
+                            src="https://cdn.lordicon.com/xjovhxra.json"
+                            trigger="loop"
+                            colors="primary:#eab308,secondary:#0f172a"
+                            style="width:50px;height:50px">
+                        </lord-icon>
+                    </div>
+                    
+                    <div class="col-12 end-message" id="endMessage">You've reached the end of the archive.</div>
+                </div>
+
+                <div class="attribution-footer">
+                    <a href="https://lordicon.com/" target="_blank">Icons by Lordicon.com</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        lucide.createIcons();
+
+        const videoGrid = document.getElementById('videoGrid');
+        const noResults = document.getElementById('noResults');
+        const searchInput = document.getElementById('searchInput');
+        const mainScroll = document.getElementById('mainScroll');
+        const loadingFooter = document.getElementById('loadingFooter');
+        const endMessage = document.getElementById('endMessage');
+
+        // Variables for data and infinite scrolling
+        let myVideos = [];
+        let currentIndex = 0;
+        const videosPerLoad = 3; 
+        let isLoading = false;
+        let isSearching = false;
+
+        // --- FETCH JSON LOGIC ---
+        async function fetchVideoData() {
+            try {
+                // Show loader immediately
+                loadingFooter.classList.add('active');
+                
+                // Fetch from the local videos.json file
+                const response = await fetch('videos.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load JSON');
+                }
+                
+                myVideos = await response.json();
+                
+                // Once data is loaded, trigger the first batch
+                loadNextBatch();
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+                loadingFooter.classList.remove('active');
+                noResults.style.display = 'block';
+                noResults.innerText = "Error loading video archive. Please ensure you are running a local server.";
+            }
+        }
+
+        // Appends a single video card
+        function appendVideoCard(video) {
+            const colWrapper = document.createElement('div');
+            colWrapper.className = 'col-12 col-md-6 col-lg-4 video-card-container';
+            
+            colWrapper.innerHTML = `
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <div class="skeleton-overlay"></div>
+                        <iframe 
+                            src="${video.streamUrl || video.embedUrl}" 
+                            allowfullscreen 
+                            loading="lazy" 
+                            allow="autoplay; encrypted-media; picture-in-picture"
+                            onload="this.previousElementSibling.style.opacity='0'; setTimeout(() => this.previousElementSibling.style.display='none', 500);">
+                        </iframe>
+                    </div>
+                    <div class="video-content">
+                        <span class="video-badge">${video.id || video.recId}</span>
+                        <h3 class="video-title">${video.title}</h3>
+                        <p class="video-desc">${video.desc || video.description}</p>
+                    </div>
+                </div>
+            `;
+            
+            videoGrid.insertBefore(colWrapper, loadingFooter);
+        }
+
+        // Handles lazy loading of batches
+        function loadNextBatch() {
+            if (isLoading || isSearching || currentIndex >= myVideos.length) return;
+            
+            isLoading = true;
+            loadingFooter.classList.add('active');
+            endMessage.classList.remove('active');
+
+            setTimeout(() => {
+                const limit = Math.min(currentIndex + videosPerLoad, myVideos.length);
+                
+                for (let i = currentIndex; i < limit; i++) {
+                    appendVideoCard(myVideos[i]);
+                }
+                
+                currentIndex = limit;
+                isLoading = false;
+                loadingFooter.classList.remove('active');
+
+                if (currentIndex >= myVideos.length) {
+                    endMessage.classList.add('active');
+                }
+            }, 1000);
+        }
+
+        // Initialize fetch on page load
+        fetchVideoData();
+
+        // Infinite Scroll Listener
+        mainScroll.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = mainScroll;
+            if (scrollTop + clientHeight >= scrollHeight - 50) {
+                loadNextBatch();
+            }
+        });
+
+        // Search Input Listener
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === "") {
+                isSearching = false;
+                document.querySelectorAll('.video-card-container').forEach(card => card.remove());
+                currentIndex = 0;
+                noResults.style.display = 'none';
+                endMessage.classList.remove('active');
+                loadNextBatch();
+                return;
+            }
+
+            isSearching = true;
+            document.querySelectorAll('.video-card-container').forEach(card => card.remove());
+            loadingFooter.classList.remove('active');
+            endMessage.classList.remove('active');
+            
+            let visibleCount = 0;
+
+            myVideos.forEach(video => {
+                const title = (video.title || "").toLowerCase();
+                const id = (video.id || video.recId || "").toLowerCase();
+                const desc = (video.desc || video.description || "").toLowerCase();
+
+                if (title.includes(searchTerm) || id.includes(searchTerm) || desc.includes(searchTerm)) {
+                    appendVideoCard(video);
+                    visibleCount++;
+                }
+            });
+
+            noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
+        });
+
+        // Sidebar Logic
+        const logoBtn = document.getElementById('logo-menu-trigger');
+        const sidebar = document.getElementById('sidebar');
+
+        logoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (window.innerWidth > 1024) {
+                sidebar.classList.toggle('collapsed');
+            } else {
+                sidebar.classList.toggle('active');
+                sidebar.classList.remove('collapsed');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024 && !sidebar.contains(e.target) && !logoBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
